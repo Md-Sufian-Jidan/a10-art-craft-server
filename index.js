@@ -52,8 +52,9 @@ async function run() {
       res.send(result);
     });
 
-    app.update('/crafts/:id', async(req, res) => {
+    app.put('/crafts/:id', async(req, res) => {
       const craft = req.body;
+      console.log(craft);
       const id = req.params.id;
       const filter = {_id : new ObjectId(id)};
       const options = { upsert: true };
@@ -72,7 +73,7 @@ async function run() {
           photo : craft.photo,
         }
       }
-      const result = await craftsCollection.updateOne(filter, options, updateCraft);
+      const result = await craftsCollection.updateOne(filter, updateCraft, options);
       res.send(result);
     });
     // Send a ping to confirm a successful connection
