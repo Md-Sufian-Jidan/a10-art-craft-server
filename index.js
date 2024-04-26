@@ -25,57 +25,69 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
     const craftsCollection = client.db("CraftsCollection").collection("Crafts");
 
-    app.get('/crafts', async(req, res) => {
+    //all crafts api
+    app.get('/crafts', async (req, res) => {
       const cursor = craftsCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
-    app.get('/crafts/:id', async(req, res) => {
+    //single craft api 
+    app.get('/crafts/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id : new ObjectId(id)}
+      const filter = { _id: new ObjectId(id) }
       const result = await craftsCollection.findOne(filter);
       res.send(result);
     });
-
-    app.post('/crafts', async(req, res) => {
+    // crafts create api
+    app.post('/crafts', async (req, res) => {
       const craft = req.body;
       const result = await craftsCollection.insertOne(craft);
       res.send(result);
     });
-
-    app.delete('/crafts/:id', async(req, res) => {
+    //craft delete api
+    app.delete('/crafts/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id : new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const result = await craftsCollection.deleteOne(filter);
       res.send(result);
     });
-
-    app.put('/crafts/:id', async(req, res) => {
+    //craft update api
+    app.put('/crafts/:id', async (req, res) => {
       const craft = req.body;
       console.log(craft);
       const id = req.params.id;
-      const filter = {_id : new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const updateCraft = {
         $set: {
-          name : craft.name,
-          subCategory : craft.subCategory,
-          description : craft.description,
-          price : craft.price,
-          process : craft.process,
-          stock : craft.stock,
-          userName : craft.userName,
-          userEmail : craft.userEmail,
-          yes : craft.yes,
-          no : craft.no,
-          photo : craft.photo,
+          name: craft.name,
+          subCategory: craft.subCategory,
+          description: craft.description,
+          price: craft.price,
+          process: craft.process,
+          stock: craft.stock,
+          userName: craft.userName,
+          userEmail: craft.userEmail,
+          yes: craft.yes,
+          no: craft.no,
+          photo: craft.photo,
         }
       }
       const result = await craftsCollection.updateOne(filter, updateCraft, options);
       res.send(result);
     });
+    //my cart api
+    app.get('/myCrafts/:email', async (req, res) => {
+      console.log({userEmail : req.params.email});
+      const filter = {userEmail : req.params.email}
+      const cursor = craftsCollection.find(filter);
+      // console.log(cursor);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -89,9 +101,9 @@ run().catch(console.dir);
 //------------------------
 
 app.get('/', (req, res) => {
-    res.send('Art & Crafts data');
+  res.send('Art & Crafts data');
 });
 
-app.listen(port,() => {
-console.log('server is running on ', port);
+app.listen(port, () => {
+  console.log('server is running on ', port);
 })
