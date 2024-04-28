@@ -27,6 +27,7 @@ async function run() {
     await client.connect();
 
     const craftsCollection = client.db("CraftsCollection").collection("Crafts");
+    const artCraftsCollection = client.db("CraftsCollection").collection("ArtCollection");
 
     //all crafts api
     app.get('/crafts', async (req, res) => {
@@ -87,9 +88,16 @@ async function run() {
       // console.log(cursor);
       const result = await cursor.toArray();
       res.send(result);
+    });
+
+    app.get('/artCrafts', async(req, res) => {
+      const result = await artCraftsCollection.find().toArray();
+      console.log(result);
+      res.send(result);
     })
+    
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
