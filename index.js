@@ -82,20 +82,26 @@ async function run() {
     });
     //my cart api
     app.get('/myCrafts/:email', async (req, res) => {
-      console.log({userEmail : req.params.email});
-      const filter = {userEmail : req.params.email}
+      console.log({ userEmail: req.params.email });
+      const filter = { userEmail: req.params.email }
       const cursor = craftsCollection.find(filter);
       // console.log(cursor);
       const result = await cursor.toArray();
       res.send(result);
     });
 
-    app.get('/artCrafts', async(req, res) => {
+    app.get('/artCrafts', async (req, res) => {
       const result = await artCraftsCollection.find().toArray();
-      console.log(result);
+      res.send(result);
+    });
+
+    app.get('/artCrafts/:id', async (req, res) => {
+      const filter = { _id: new ObjectId(req.params.id) };
+      console.log(filter);
+      const result = await artCraftsCollection.findOne(filter);
       res.send(result);
     })
-    
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
